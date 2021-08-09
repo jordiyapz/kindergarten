@@ -1,0 +1,9 @@
+body {
+  margin: 0;
+}
+
+#main-canvas {
+  background-color: aquamarine;
+  width: 800px;
+  height: 600px;
+}

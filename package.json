@@ -1,0 +1,29 @@
+{
+  "name": "kindergarten",
+  "version": "1.0.0",
+  "description": "A safe OS simulator for agent to play with.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jordiyapz/kindergarten.git"
+  },
+  "keywords": [
+    "simulator"
+  ],
+  "author": "Jordi Yaputra",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jordiyapz/kindergarten/issues"
+  },
+  "homepage": "https://github.com/jordiyapz/kindergarten#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "pixi-shim": "^2.3.2",
+    "pixi.js": "^6.1.0"
+  }
+}
