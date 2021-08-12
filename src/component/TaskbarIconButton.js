@@ -1,5 +1,5 @@
 import IconButton from "./IconButton";
-import { Graphics } from 'pixi.js';
+import { Graphics } from "pixi.js";
 
 class TaskbarIconButton extends IconButton {
   /**
@@ -13,7 +13,7 @@ class TaskbarIconButton extends IconButton {
 
     super(size, iconTexture, {
       padding: padding || 7,
-      ...iconButtonOptions
+      ...iconButtonOptions,
     });
     this._underline = this._createUnderline(3, underlineColor);
     this.setActive(isActive || false);
@@ -21,7 +21,7 @@ class TaskbarIconButton extends IconButton {
   }
 
   _createUnderline(height, color) {
-    const underlineGraphic = new Graphics()
+    const underlineGraphic = new Graphics();
     underlineGraphic.pivot.set(0, height);
     underlineGraphic.beginFill(color || 0x70a0d0);
     underlineGraphic.drawRect(0, this._size, this._size, height);
@@ -33,10 +33,10 @@ class TaskbarIconButton extends IconButton {
    *
    * @param {boolean} state
    */
-  setActive(state=true) {
+  setActive(state = true) {
     this.isActive = state;
     this._underline.visible = this.isActive;
   }
 }
 
-export default TaskbarIconButton
+export default TaskbarIconButton;

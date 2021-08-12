@@ -1,4 +1,4 @@
-import { Container, Graphics } from 'pixi.js';
+import { Container, Graphics } from "pixi.js";
 
 class TaskbarUI extends Container {
   /**
@@ -6,8 +6,8 @@ class TaskbarUI extends Container {
    * @param {{ height: number, backgroundColor: number }} options
    */
   constructor(options) {
-    let { y, width, height, backgroundColor } = options
-    super()
+    let { y, width, height, backgroundColor } = options;
+    super();
 
     this.backgroundColor = backgroundColor || 0x202020;
 
@@ -29,7 +29,7 @@ class TaskbarUI extends Container {
   }
 
   addPin(icon) {
-    console.log('Not implemented');
+    console.log("Not implemented");
   }
 }
 

@@ -1,5 +1,5 @@
 import IconButton from "./IconButton";
-import { Text, Texture } from 'pixi.js';
+import { Graphics, Text, Texture } from "pixi.js";
 
 class DesktopIconButton extends IconButton {
   /**
@@ -10,7 +10,7 @@ class DesktopIconButton extends IconButton {
    */
   constructor(size, iconTexture, name, options) {
     const { fontSize, ...restOptions } = options;
-    super(size, iconTexture, options);
+    super(size.width || size, iconTexture, options);
     const text = new Text(name, {
       fontSize: fontSize || 12,
       align: "center",
@@ -20,9 +20,20 @@ class DesktopIconButton extends IconButton {
       dropShadowColor: 0x000000,
       dropShadowDistance: 1,
     });
-    text.position.set(size/2, size);
-    text.anchor.x = .5;
+    text.position.set(size / 2, size);
+    text.anchor.x = 0.5;
+    // this.height = size.height || size;
     this.addChild(text);
+  }
+
+  _addOverlay() {
+    const overlay = new Graphics();
+    overlay.beginFill(0xffffff, 0.2);
+    overlay.lineStyle(2, 0xffffff, 0.3);
+    overlay.drawRect(0, 0, this._width, this._height);
+    overlay.visible = false;
+    this.addChild(overlay);
+    this._overlay = overlay;
   }
 }
 
