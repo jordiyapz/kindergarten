@@ -1,27 +1,24 @@
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-const HTMLWebpackPlugin = require('html-webpack-plugin')
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const HTMLWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-	mode: 'development',
-	devServer: {
-		contentBase: 'dist',
-		port: 9000
-	},
-	devtool: 'inline-source-map',
-	plugins: [
-		new CopyWebpackPlugin([{
-			from: 'build/assets',
-			to: 'assets'
-		}, {
-      from: 'build/style.css',
-      to: '.'
-    }, {
-      from: 'build/favicon.ico',
-      to: '.'
-    }]),
-		new HTMLWebpackPlugin({
-			template: 'build/index.html',
-			filename: 'index.html'
-		})
-	]
-}
+  mode: "development",
+  devServer: {
+    contentBase: "./dist",
+    port: 9000,
+  },
+  devtool: "inline-source-map",
+  plugins: [
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: "public/assets", to: "assets" },
+        { from: "public/style.css", to: "." },
+        { from: "public/favicon.ico", to: "." },
+      ],
+    }),
+    new HTMLWebpackPlugin({
+      template: "public/index.html",
+      filename: "index.html",
+    }),
+  ],
+};
