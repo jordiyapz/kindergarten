@@ -6,7 +6,7 @@
   "scripts": {
     "production": "webpack --mode production --config webpack.config.prod.js",
     "build": "webpack --mode development --config webpack.config.dev.js",
-    "start": "webpack serve --open --config webpack.config.dev.js"
+    "start": "webpack serve --open --host 0.0.0.0 --config webpack.config.dev.js"
   },
   "repository": {
     "type": "git",
