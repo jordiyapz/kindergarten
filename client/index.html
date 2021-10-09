@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kindergarten</title>
+    <style>
+      body{
+        background-color: grey;
+      }
+      
+      #content-wrapper {
+        display:flex;
+        flex-direction: column;
+        width: 600px;
+      }
+      #controller-outer-wrapper {
+        display: flex;
+        justify-content: flex-end;
+      }
+      #controller-wrapper {
+        display: flex;
+        flex-direction: column;
+        padding-top: 5px;
+        width: 192px;
+      }
+      #controller-wrapper div {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+      }
+      .control-arrow {
+        width: 60px;
+        height: 60px;
+        border: 2px solid black;
+        margin: 2px;
+        background-color: gainsboro
+      }
+      .control-arrow:hover {
+        background-color: gray;
+      }
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <div id="content-wrapper">
+      <div id="main-canvas-wrapper">
+        <img alt="Loading..." width="600px" height="400px" id="main-canvas" />
+      </div>
+      <div>
+        <input type="button" onclick="reconnect()" value="Re-connect" />
+        <span>Connection status: <span id="status">open</span></span>
+      </div>
+      <br />
+      <div id="controller-outer-wrapper">
+        <div id="controller-wrapper">
+          <div>
+            <input
+              type="button"
+              class="control-arrow"
+              value="W"
+              onclick="move(DIRECTION.UP)"
+            />
+          </div>
+          <div>
+            <input
+              type="button"
+              class="control-arrow"
+              value="A"
+              onclick="move(DIRECTION.LEFT)"
+            />
+            <input
+              type="button"
+              class="control-arrow"
+              value="S"
+              onclick="move(DIRECTION.DOWN)"
+            />
+            <input
+              type="button"
+              class="control-arrow"
+              value="D"
+              onclick="move(DIRECTION.RIGHT)"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const socket = io();
+      const mainCanvas = document.getElementById("main-canvas");
+      const connStat = document.getElementById("status");
+
+      function setStatus(status) {
+        connStat.innerText = status;
+      }
+      function reconnect() {
+        console.log("re-connect");
+        if (!socket.connected) {
+          console.log("re-connecting");
+          socket.close();
+          socket.connect();
+        }
+      }
+
+      socket.on("message", (msg) => {
+        console.log(msg);
+      });
+
+      socket.on("connect", () => {
+        console.log(socket.id);
+        setStatus("connected");
+
+        document.addEventListener("keydown", (e) => {
+          switch (e.key) {
+            case "w":
+              move(DIRECTION.UP);
+              break;
+            case "a":
+              move(DIRECTION.LEFT);
+              break;
+            case "s":
+              move(DIRECTION.DOWN);
+              break;
+            case "d":
+              move(DIRECTION.RIGHT);
+              break;
+          }
+        });
+      });
+
+      socket.on("connect_error", (err) => {
+        console.log(`connect_error due to ${err.message}`);
+        setStatus("error");
+        socket.connect();
+      });
+
+      socket.on("disconnect", (e) => {
+        console.debug(e);
+        setStatus("disconnected");
+        socket.connect();
+      });
+
+      socket.on("render", (image) => {
+        mainCanvas.src = image;
+      });
+
+      const DIRECTION = {
+        UP: 0,
+        RIGHT: 1,
+        DOWN: 2,
+        LEFT: 3,
+      };
+
+      function move(direction) {
+        socket.emit("move", direction);
+      }
+    </script>
+  </body>
+</html>

@@ -3,6 +3,7 @@ const HTMLWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
   mode: "development",
+  entry: "./src-old/client.js",
   devServer: {
     contentBase: "./dist",
     port: 9000,

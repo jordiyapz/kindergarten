@@ -1,5 +1,5 @@
-const IconButton = require("./IconButton");
-const { Graphics } = require("pixi-shim");
+import IconButton from "./IconButton";
+import { Graphics } from "pixi.js";
 
 class TaskbarIconButton extends IconButton {
   /**
@@ -39,4 +39,4 @@ class TaskbarIconButton extends IconButton {
   }
 }
 
-module.exports = TaskbarIconButton;
+export default TaskbarIconButton;

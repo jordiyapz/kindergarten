@@ -1,4 +1,4 @@
-const { Container, Graphics } = require("pixi-shim");
+import { Container, Graphics } from "pixi.js";
 
 class TaskbarUI extends Container {
   /**
@@ -33,4 +33,4 @@ class TaskbarUI extends Container {
   }
 }
 
-module.exports = TaskbarUI;
+export default TaskbarUI;

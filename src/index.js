@@ -1,33 +1,24 @@
-import { Renderer, Loader, Ticker } from "pixi.js";
-import OperatingSystem from "./component/OperatingSystemUI";
+const fs = require("fs");
+const { fabric } = require("fabric");
 
-const renderer = new Renderer({
-  view: document.getElementById("main-canvas"),
-  backgroundColor: 0x81a2f0,
+const canvas = new fabric.StaticCanvas(null, { width: 200, height: 200 });
+const text = new fabric.Text("Hello Canvas", {
+  left: 20,
+  top: 20,
+  fill: "#f55",
+  angle: 15,
+});
+canvas.add(text);
+canvas.renderAll();
+
+const out = fs.createWriteStream(__dirname + "/helloworld.png");
+var stream = canvas.createPNGStream();
+
+stream.on("data", function (chunk) {
+  out.write(chunk);
+  console.log(`Written ${chunk.length} bytes of data`);
 });
 
-const loader = new Loader("assets", 10);
-loader.onLoad.add((loader) => {
-  console.log(`Loading: ${loader.progress}%`);
+stream.on("end", function () {
+  console.log("Done!");
 });
-loader
-  .add("windows-logo", "windows-logo-w-64.png")
-  .add("quest-icon", "quest-64.png")
-  .load(setup);
-
-const operatingSystem = new OperatingSystem(
-  renderer.screen.width,
-  renderer.screen.height
-);
-
-const ticker = new Ticker();
-ticker.autoStart = true;
-ticker.add(gameLoop);
-
-function setup(loader, resources) {
-  operatingSystem.setup(resources);
-}
-
-function gameLoop(delta) {
-  renderer.render(operatingSystem);
-}

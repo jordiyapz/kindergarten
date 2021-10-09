@@ -1,5 +1,5 @@
-const IconButton = require("./IconButton");
-const { Graphics, Text, Texture } = require("pixi-shim");
+import IconButton from "./IconButton";
+import { Graphics, Text, Texture } from "pixi.js";
 
 class DesktopIconButton extends IconButton {
   /**
@@ -37,4 +37,4 @@ class DesktopIconButton extends IconButton {
   }
 }
 
-module.exports = DesktopIconButton;
+export default DesktopIconButton;
