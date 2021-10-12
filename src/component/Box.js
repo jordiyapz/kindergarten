@@ -35,10 +35,11 @@ const Box = new fabric.util.createClass(fabric.Group, {
       components.forEach((c) => {
         if (direction === "row") {
           c.set({ left: c.left + val });
+          val += c.width + spacing;
         } else if (direction === "column") {
           c.set({ top: c.top + val });
+          val += c.height + spacing;
         }
-        val += c.width + spacing;
       });
     }
 
@@ -46,6 +47,8 @@ const Box = new fabric.util.createClass(fabric.Group, {
       padding,
       top,
       left,
+      originX: "left",
+      originY: "top",
       ...options,
     });
     this.justify = justify;
@@ -63,12 +66,17 @@ const Box = new fabric.util.createClass(fabric.Group, {
       });
     }
 
+    const bgWidth = width || this.width + padding * 2;
+    const bgHeight = height || this.height + padding * 2;
+
     if (align === "center") {
       components.forEach((c) => {
-        if (height !== undefined && direction === "row") {
-          c.set({ top: c.top + (height - c.height) / 2 - padding });
-        } else if (width !== undefined && direction === "column") {
-          c.set({ left: c.left + (width - c.width) / 2 - padding });
+        if (direction === "row") {
+          c.set({
+            top: c.top + (bgHeight - c.height) / 2 - padding,
+          });
+        } else if (direction === "column") {
+          c.set({ left: c.left + (bgWidth - c.width) / 2 - padding });
         }
       });
     }
@@ -78,8 +86,6 @@ const Box = new fabric.util.createClass(fabric.Group, {
       top: this.top + padding,
     });
 
-    const bgWidth = width || this.width + padding * 2;
-    const bgHeight = height || this.height + padding * 2;
     const bg = new fabric.Rect({
       width: bgWidth,
       height: bgHeight,
