@@ -2,6 +2,7 @@ const { fabric } = require("fabric");
 const theme = require("../theme");
 const Box = require("./Box");
 const Logo = require("./Logo");
+const Window = require("./Window");
 
 class OperatingSystemUI extends fabric.Group {
   constructor(assets, { width = 600, height = 400 }) {
@@ -22,8 +23,7 @@ class OperatingSystemUI extends fabric.Group {
     const desktopIconBtns = applications.map(({ icon, name }) => {
       const logo = new Logo(assets[icon], { size: 24 });
       const text = new fabric.Text(name, {
-        fontSize: 8,
-        fill: "white",
+        ...theme.font,
         shadow: `rgba(0,0,0,.9) 0px 1px 1px`,
       });
       const btn = new Box([logo, text], {
@@ -70,10 +70,7 @@ class OperatingSystemUI extends fabric.Group {
 
     const startMenuItems = applications.map((app) => {
       const icon = new Logo(assets[app.icon], { size: 17 });
-      const label = new fabric.Text(app.name, {
-        fontSize: 8,
-        fill: "white",
-      });
+      const label = new fabric.Text(app.name, theme.font);
       const btn = new Box([icon, label], {
         autoLayout: true,
         padding: 6,
@@ -88,8 +85,9 @@ class OperatingSystemUI extends fabric.Group {
       backgroundColor: theme.palette.darkGrey,
       autoLayout: true,
       direction: "column",
-      top: height - (startMenuProp.height + taskbarHeight),
+      top: height - (startMenuProp.height + taskbarHeight) + 1,
       visible: false,
+      shadow: "rgba(0,0,0,.5) 0 0 4",
     });
 
     this._cursor = new fabric.Path(
@@ -104,6 +102,43 @@ class OperatingSystemUI extends fabric.Group {
     );
     this._cursor.scale(10 / this._cursor.width);
 
+    // notepad
+    const notepadBodyContent = new fabric.Text("Lorem ipsum dolor sit amet!", {
+      ...theme.font,
+      fill: "black",
+    });
+    const notepadBody = new Box([notepadBodyContent], {
+      backgroundColor: "white",
+      width: 320,
+      height: 220,
+      padding: 4,
+    });
+    const notepadWindow = new Window(
+      notepadBody,
+      { title: "Notepad", iconTexture: assets["notepad-logo"] },
+      { top: 80, left: 120 }
+    );
+
+    // quest
+    const questBodyContent = new fabric.Text("Lorem ipsum dolor sit amet!", {
+      ...theme.font,
+      fill: "black",
+    });
+    const questBody = new Box([questBodyContent], {
+      width: 151,
+      height: 82,
+      padding: 4,
+      backgroundColor: theme.palette.stickyNoteYellow,
+    });
+    const questWindow = new Window(
+      questBody,
+      { title: "Quest App", iconTexture: assets["quest-logo"] },
+      { left: 324, top: 193 }
+    );
+
+    workspace.addWithUpdate(notepadWindow);
+    workspace.addWithUpdate(questWindow);
+
     this.addWithUpdate(workspace);
     this.addWithUpdate(this._startMenu);
     this.addWithUpdate(this._taskbar);
@@ -115,9 +150,9 @@ class OperatingSystemUI extends fabric.Group {
   }
 
   click() {
-    const { left: x, top: y } = this._cursor;
-    // console.log(this._taskbar.intersectsWithRect({x, y}, {x:x+1, y:y+1},true))
-    // this._startMenu.set('visible', !this._startMenu.visible)
+    if (this._cursor.intersectsWithObject(this._taskbar, false, true)) {
+      this._startMenu.set("visible", !this._startMenu.visible);
+    }
   }
 }
 

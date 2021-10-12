@@ -24,10 +24,13 @@ const Box = new fabric.util.createClass(fabric.Group, {
       autoLayout = false,
       spacing = 0,
       ...options
-    }
+    } = {}
   ) {
+    padding =
+      typeof padding === "object" ? padding : { x: padding, y: padding };
+
     components.forEach((c) => {
-      c.set({ top: c.top + padding, left: c.left + padding });
+      c.set({ top: c.top + padding.y, left: c.left + padding.x });
     });
 
     if (autoLayout) {
@@ -44,7 +47,7 @@ const Box = new fabric.util.createClass(fabric.Group, {
     }
 
     this.callSuper("initialize", components, {
-      padding,
+      padding: Math.max(padding.x, padding.y),
       top,
       left,
       originX: "left",
@@ -59,38 +62,38 @@ const Box = new fabric.util.createClass(fabric.Group, {
     if (justify === "center") {
       components.forEach((c) => {
         if (width !== undefined && direction === "row") {
-          c.set({ left: c.left + (width - this.width) / 2 - padding });
+          c.set({ left: c.left + (width - this.width) / 2 - padding.x });
         } else if (height !== undefined && direction === "column") {
-          c.set({ top: c.top + (height - this.height) / 2 - padding });
+          c.set({ top: c.top + (height - this.height) / 2 - padding.y });
         }
       });
     }
 
-    const bgWidth = width || this.width + padding * 2;
-    const bgHeight = height || this.height + padding * 2;
+    const bgWidth = width || this.width + padding.x * 2;
+    const bgHeight = height || this.height + padding.y * 2;
 
     if (align === "center") {
       components.forEach((c) => {
         if (direction === "row") {
           c.set({
-            top: c.top + (bgHeight - c.height) / 2 - padding,
+            top: c.top + (bgHeight - c.height) / 2 - padding.y,
           });
         } else if (direction === "column") {
-          c.set({ left: c.left + (bgWidth - c.width) / 2 - padding });
+          c.set({ left: c.left + (bgWidth - c.width) / 2 - padding.x });
         }
       });
     }
 
     this.set({
-      left: this.left + padding,
-      top: this.top + padding,
+      left: this.left + padding.x,
+      top: this.top + padding.y,
     });
 
     const bg = new fabric.Rect({
       width: bgWidth,
       height: bgHeight,
-      left: -(this.width / 2 + padding),
-      top: -(this.height / 2 + padding),
+      left: -(this.width / 2 + padding.x),
+      top: -(this.height / 2 + padding.y),
       fill: backgroundColor,
     });
     this.insertAt(bg, 0);

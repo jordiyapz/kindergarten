@@ -12,3 +12,7 @@ body {
   justify-content: center;
   align-items: center;
 }
+
+#main-canvas {
+  cursor: pointer !important;
+}
