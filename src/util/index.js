@@ -44,4 +44,25 @@ const renderCanvas = (socket, sim) => {
     });
 };
 
-module.exports = { loadImage, loadImages, renderCanvas, streamToBuff };
+/**
+ *
+ * @param {fabric.Object} obj
+ * @param {*} options
+ * @returns
+ */
+const asyncClone = (obj, { useCloneAsImage, propertiesToInclude } = {}) =>
+  new Promise((resolve, reject) => {
+    try {
+      obj.clone(resolve, propertiesToInclude || []);
+    } catch (error) {
+      reject(error);
+    }
+  });
+
+module.exports = {
+  loadImage,
+  loadImages,
+  renderCanvas,
+  streamToBuff,
+  asyncClone,
+};

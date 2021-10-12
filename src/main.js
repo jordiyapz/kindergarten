@@ -1,6 +1,6 @@
 const { fabric } = require("fabric");
 const IconButton = require("./component/IconButton");
-const ImageLoader = require("./component/ImageLoader");
+const ImageLoader = require("./util/ImageLoader");
 // const OperatingSystemUI = require("./component/OperatingSystemUI");
 
 const DIRECTION = {

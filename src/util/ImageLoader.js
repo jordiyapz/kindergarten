@@ -1,4 +1,4 @@
-const { loadImage } = require("../util");
+const { loadImage } = require(".");
 const { Mutex } = require("async-mutex");
 
 class ImageLoader {
