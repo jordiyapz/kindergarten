@@ -1,5 +1,5 @@
 const Box = new fabric.util.createClass(fabric.Group, {
-  type: "Box",
+  type: "BoxGroup",
   /**
    *
    * @param {fabric.Object[]} components

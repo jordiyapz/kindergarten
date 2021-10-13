@@ -59,10 +59,35 @@ const asyncClone = (obj, { useCloneAsImage, propertiesToInclude } = {}) =>
     }
   });
 
+/**
+ * 
+ * @param {Array.<object>} rectangles 
+ * @returns 
+ */
+const calcTotalDimension = (rectangles) => {
+  const x = [Infinity, -Infinity];
+  const y = [Infinity, -Infinity];
+
+  for (const { left=0, top=0, width, height } of rectangles) {
+    x[0] = Math.min(x[0], left);
+    y[0] = Math.min(y[0], top);
+    x[1] = Math.max(x[1], left + width);
+    y[1] = Math.max(y[1], top + height);
+  }
+
+  return {
+    left: x[0],
+    top: y[0],
+    width: x[1] - x[0],
+    height: y[1] - y[0],
+  };
+};
+
 module.exports = {
   loadImage,
   loadImages,
   renderCanvas,
   streamToBuff,
   asyncClone,
+  calcTotalDimension,
 };

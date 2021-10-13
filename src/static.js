@@ -3,7 +3,8 @@ const ImageLoader = require("./util/ImageLoader");
 const Logo = require("./component/Logo");
 const OperatingSystemUI = require("./component/OperatingSystemUI");
 const theme = require("./theme");
-const BoxGroup = require("./component/BoxGroup");
+const Box = require("./component/Box");
+const { boxDebugRunner } = require("./util/debug");
 
 const canvas = new fabric.Canvas("main-canvas", {
   width: 600,
@@ -47,9 +48,9 @@ loader
       onCursorClick();
     });
 
-    // const _debugger = new BoxDebugger();
-    // canvas.add(_debugger);
-
     canvas.renderAll();
+
+    // boxDebugRunner(canvas, assets);
+    // boxEventDebugRunner(canvas);
   })
   .catch(console.error);
