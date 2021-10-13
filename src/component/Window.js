@@ -1,6 +1,6 @@
 const { fabric } = require("fabric");
 const theme = require("../theme");
-const Box = require("./Box");
+const BoxGroup = require("./BoxGroup");
 const Logo = require("./Logo");
 
 const actionIconsPath = {
@@ -10,14 +10,14 @@ const actionIconsPath = {
   restore: "M 0 2 H 5 V 7 H 0 z M 2 0 H 7 V 5 H 2 z",
 };
 
-const Header = fabric.util.createClass(Box, {
+const Header = fabric.util.createClass(BoxGroup, {
   initialize: function (
     width,
     { title, iconTexture, headerHeight = 20, actionBtnWidth = 25 }
   ) {
     const actionBtns = Object.values(actionIconsPath).map((iconPath, i) => {
       const icon = new fabric.Path(iconPath, { stroke: "white", fill: null });
-      const btn = new Box([icon], {
+      const btn = new BoxGroup([icon], {
         left: i * actionBtnWidth - 1,
         height: headerHeight - 2,
         width: actionBtnWidth,
@@ -31,7 +31,7 @@ const Header = fabric.util.createClass(Box, {
       return btn;
     });
 
-    const actionBtnGroup = new Box(actionBtns, {
+    const actionBtnGroup = new BoxGroup(actionBtns, {
       left: width - actionBtnWidth * 3,
       top: 1,
     });
@@ -45,7 +45,7 @@ const Header = fabric.util.createClass(Box, {
       contentItems.unshift(icon);
     }
 
-    const content = new Box(contentItems, {
+    const content = new BoxGroup(contentItems, {
       spacing: 2,
       autoLayout: true,
       padding: { x: 6, y: 0 },

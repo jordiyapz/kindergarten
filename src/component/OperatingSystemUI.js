@@ -1,6 +1,6 @@
 const { fabric } = require("fabric");
 const theme = require("../theme");
-const Box = require("./Box");
+const BoxGroup = require("./BoxGroup");
 const Logo = require("./Logo");
 const Window = require("./Window");
 
@@ -26,7 +26,7 @@ class OperatingSystemUI extends fabric.Group {
         ...theme.font,
         shadow: `rgba(0,0,0,.9) 0px 1px 1px`,
       });
-      const btn = new Box([logo, text], {
+      const btn = new BoxGroup([logo, text], {
         width: 42,
         align: "center",
         autoLayout: true,
@@ -34,13 +34,13 @@ class OperatingSystemUI extends fabric.Group {
       });
       return btn;
     });
-    const desktopIconContainer = new Box(desktopIconBtns, {
+    const desktopIconContainer = new BoxGroup(desktopIconBtns, {
       autoLayout: true,
       spacing: 12,
       padding: 4,
       direction: "column",
     });
-    const workspace = new Box([desktopIconContainer], {
+    const workspace = new BoxGroup([desktopIconContainer], {
       width,
       height: height - taskbarHeight,
       backgroundColor: theme.palette.desktopBg,
@@ -53,7 +53,7 @@ class OperatingSystemUI extends fabric.Group {
       const logo = new Logo(assets[icon], {
         size: 18,
       });
-      const btn = new Box([logo], {
+      const btn = new BoxGroup([logo], {
         width: 42,
         height: taskbarHeight,
         justify: "center",
@@ -61,7 +61,7 @@ class OperatingSystemUI extends fabric.Group {
       });
       return btn;
     });
-    this._taskbar = new Box(taskbarBtns, {
+    this._taskbar = new BoxGroup(taskbarBtns, {
       top: height - taskbarHeight,
       width,
       backgroundColor: theme.palette.darkerGrey,
@@ -71,7 +71,7 @@ class OperatingSystemUI extends fabric.Group {
     const startMenuItems = applications.map((app) => {
       const icon = new Logo(assets[app.icon], { size: 17 });
       const label = new fabric.Text(app.name, theme.font);
-      const btn = new Box([icon, label], {
+      const btn = new BoxGroup([icon, label], {
         autoLayout: true,
         padding: 6,
         spacing: 8,
@@ -80,7 +80,7 @@ class OperatingSystemUI extends fabric.Group {
       });
       return btn;
     });
-    this._startMenu = new Box(startMenuItems, {
+    this._startMenu = new BoxGroup(startMenuItems, {
       ...startMenuProp,
       backgroundColor: theme.palette.darkGrey,
       autoLayout: true,
@@ -107,7 +107,7 @@ class OperatingSystemUI extends fabric.Group {
       ...theme.font,
       fill: "black",
     });
-    const notepadBody = new Box([notepadBodyContent], {
+    const notepadBody = new BoxGroup([notepadBodyContent], {
       backgroundColor: "white",
       width: 320,
       height: 220,
@@ -124,7 +124,7 @@ class OperatingSystemUI extends fabric.Group {
       ...theme.font,
       fill: "black",
     });
-    const questBody = new Box([questBodyContent], {
+    const questBody = new BoxGroup([questBodyContent], {
       width: 151,
       height: 82,
       padding: 4,

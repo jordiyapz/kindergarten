@@ -1,7 +1,7 @@
 const { fabric } = require("fabric");
-const Box = require("./Box");
+const BoxGroup = require("./BoxGroup");
 
-const Logo = fabric.util.createClass(Box, {
+const Logo = fabric.util.createClass(BoxGroup, {
   initialize: function (
     image,
     { imgOpts = {}, size = 28, padding = 2, ...options } = {}

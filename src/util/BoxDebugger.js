@@ -1,3 +1,5 @@
+const Box = require("../component/BoxGroup");
+
 class BoxDebugger extends fabric.Group {
   constructor() {
     const bg = new fabric.Rect({
@@ -59,3 +61,5 @@ class BoxDebugger extends fabric.Group {
     super([bg, wrapper, mid]);
   }
 }
+
+module.exports = BoxDebugger;
