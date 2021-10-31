@@ -98,6 +98,10 @@ function translate(from, matrix) {
   return toPosition(p);
 }
 
+function constraintNum(value, { min = 0, max = Infinity }) {
+  return Math.max(min, Math.min(max, value));
+}
+
 module.exports = {
   loadImage,
   loadImages,
@@ -107,5 +111,6 @@ module.exports = {
   calcTotalDimension,
   parsePoint,
   toPosition,
-  translate
+  translate,
+  constraintNum,
 };
