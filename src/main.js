@@ -1,97 +1,87 @@
 const { fabric } = require("fabric");
-const IconButton = require("./component/IconButton");
 const ImageLoader = require("./util/ImageLoader");
-// const OperatingSystemUI = require("./component/OperatingSystemUI");
+const OperatingSystemUI = require("./component/OperatingSystemUI");
+const fs = require("fs");
 
-const DIRECTION = {
-  UP: 0,
-  RIGHT: 1,
-  DOWN: 2,
-  LEFT: 3,
-};
+const imageLoader = new ImageLoader();
 
-const imageLoader = new ImageLoader().add(
-  [
+const fontPath = __dirname + "/assets/fonts/";
+const fontManifest = {
+  Roboto: [
     {
-      name: "windows-logo",
-      url: "windows-logo-w-64.png",
-      options: { scaleX: 0.5, scaleY: 0.5 },
+      name: "Roboto-Regular.ttf",
+      weight: "regular",
+      style: "normal",
+    },
+    {
+      name: "Roboto-Italic.ttf",
+      weight: "regular",
+      style: "italic",
     },
   ],
-  { urlPrefix: process.env.BASE_URL + "/assets/" }
-);
+};
+
+Object.entries(fontManifest).forEach(([family, manifests]) => {
+  manifests.forEach(({ name, ...manifest }) => {
+    fabric.nodeCanvas.registerFont(fontPath + `${family}/${name}`, {
+      family,
+      ...manifest,
+    });
+  });
+});
+
+imageLoader
+  .add(
+    [
+      { name: "windows-logo", url: "windows-logo-w-64.png" },
+      { name: "quest-logo", url: "quest-logo-64.png" },
+      { name: "paint-logo", url: "paint-64.png" },
+      { name: "notepad-logo", url: "notepad-logo-64.png" },
+    ],
+    { urlPrefix: process.env.BASE_URL + "/assets/" }
+  )
+  .load();
 
 const createSim = async () => {
-  let images;
+  const canvasOptions = {
+    width: 600,
+    height: 400,
+    backgroundColor: "#a0a0a0",
+    selection: false,
+    hoverCursor: "none",
+    renderOnAddRemove: false,
+  };
+
+  let assets;
   try {
-    images = await imageLoader.load();
+    assets = await imageLoader.load();
   } catch (error) {
     console.error("Image loading error: " + error.message || error);
     return Promise.reject(error);
   }
 
-  const canvasSize = {
-    width: 600,
-    height: 400,
-  };
-  const canvas = new fabric.StaticCanvas(null, {
-    ...canvasSize,
-    backgroundColor: "#AAAAFA",
-  });
+  try {
+    const canvas = new fabric.Canvas(null, { ...canvasOptions });
+    const os = new OperatingSystemUI(assets, {});
+    canvas.add(os);
+    canvas.renderAll();
 
-  const taskbarOptions = {
-    height: 32,
-  };
-
-  const logo = images["windows-logo"];
-  logo.set("padding", 4);
-
-  const windowsBtn = new IconButton(logo, {
-    width: taskbarOptions.height,
-    height: taskbarOptions.height,
-    padding: 4,
-  });
-
-  const taskbarBg = new fabric.Rect({
-    width: canvasSize.width,
-    height: taskbarOptions.height,
-    fill: "#404040",
-  });
-
-  const taskbar = new fabric.Group([taskbarBg, windowsBtn], {
-    top: canvasSize.height - taskbarOptions.height,
-  });
-
-  const cursor = new fabric.Rect({
-    left: 20,
-    top: 20,
-    width: 20,
-    height: 20,
-    fill: "green",
-  });
-
-  canvas.add(taskbar);
-  canvas.add(windowsBtn);
-  canvas.add(cursor);
-
-  function move(direction, options) {
-    const { value, ...opts } = options;
-    switch (direction) {
-      case DIRECTION.UP:
-        cursor.animate("top", `-=${value}`, opts);
-        break;
-      case DIRECTION.DOWN:
-        cursor.animate("top", `+=${value}`, opts);
-        break;
-      case DIRECTION.LEFT:
-        cursor.animate("left", `-=${value}`, opts);
-        break;
-      case DIRECTION.RIGHT:
-        cursor.animate("left", `+=${value}`, opts);
-        break;
-    }
+    const actions = {
+      moveCursor: ({ x, y }) => {
+        const cursor = os.getCursorCoord();
+        const movement = new fabric.Point(x, y);
+        const target = cursor.add(movement);
+        os.moveCursor(target);
+      },
+    };
+    return {
+      canvas,
+      ...actions,
+    };
+  } catch (error) {
+    console.error("Something went wrong: " + error.message || error);
+    return Promise.reject(error);
   }
-  return { canvas, move };
 };
 
 module.exports = { createSim };

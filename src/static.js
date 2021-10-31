@@ -1,9 +1,6 @@
 const { fabric } = require("fabric");
 const ImageLoader = require("./util/ImageLoader");
-const Logo = require("./component/Logo");
 const OperatingSystemUI = require("./component/OperatingSystemUI");
-const theme = require("./theme");
-const Box = require("./component/Box");
 const {
   boxDebugRunner,
   boxEventDebugRunner,

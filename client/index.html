@@ -146,14 +146,14 @@
       });
 
       const DIRECTION = {
-        UP: 0,
-        RIGHT: 1,
-        DOWN: 2,
-        LEFT: 3,
+        UP: { x: 0, y: -10 },
+        RIGHT: { x: 10, y: 0 },
+        DOWN: { x: 0, y: 10 },
+        LEFT: { x: -10, y: 0 },
       };
 
-      function move(direction) {
-        socket.emit("move", direction);
+      function move(movement) {
+        socket.emit("move", movement);
       }
     </script>
   </body>

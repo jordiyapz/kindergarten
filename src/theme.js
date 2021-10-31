@@ -8,6 +8,7 @@ const theme = {
   font: {
     fontSize: 10,
     fill: "white",
+    fontFamily: "Roboto",
   },
 };
 module.exports = theme;

@@ -31,8 +31,10 @@ const streamToBuff = (stream) =>
   });
 
 const renderCanvas = (socket, sim) => {
-  sim.canvas.renderAll();
-  const stream = sim.canvas.createPNGStream();
+  const { canvas } = sim;
+  canvas.renderAll();
+
+  const stream = canvas.createPNGStream();
   streamToBuff(stream)
     .then((buffer) => {
       const imgBufStr = buffer.toString("base64");

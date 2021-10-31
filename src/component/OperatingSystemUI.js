@@ -145,6 +145,11 @@ class OperatingSystemUI extends fabric.Group {
     this.addWithUpdate(this._cursor);
   }
 
+  getCursorCoord() {
+    const { left, top } = this._cursor;
+    return new fabric.Point(left + this.width / 2, top + this.height / 2);
+  }
+
   moveCursor({ x, y }) {
     this._cursor.set({ top: y - this.height / 2, left: x - this.width / 2 });
   }

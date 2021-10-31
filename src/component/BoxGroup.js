@@ -1,3 +1,5 @@
+const { fabric } = require("fabric");
+
 const Box = new fabric.util.createClass(fabric.Group, {
   type: "BoxGroup",
   /**
