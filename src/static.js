@@ -4,7 +4,12 @@ const Logo = require("./component/Logo");
 const OperatingSystemUI = require("./component/OperatingSystemUI");
 const theme = require("./theme");
 const Box = require("./component/Box");
-const { boxDebugRunner } = require("./util/debug");
+const {
+  boxDebugRunner,
+  boxEventDebugRunner,
+  anotherBox,
+  yetAgainAnotherBox,
+} = require("./util/debug");
 
 const canvas = new fabric.Canvas("main-canvas", {
   width: 600,
@@ -51,6 +56,7 @@ loader
     canvas.renderAll();
 
     // boxDebugRunner(canvas, assets);
-    // boxEventDebugRunner(canvas);
+    // anotherBox(canvas);
+    // yetAgainAnotherBox(canvas);
   })
   .catch(console.error);

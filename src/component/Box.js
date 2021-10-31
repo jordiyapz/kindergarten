@@ -29,6 +29,7 @@ const _setChildrenPosition = (children, { spacing, direction }) => {
 
 const Box = fabric.util.createClass(fabric.Rect, {
   type: "Box",
+
   initialize: function (children, options) {
     if (options === undefined) {
       throw new Error("Missing argument children");
@@ -58,20 +59,20 @@ const Box = fabric.util.createClass(fabric.Rect, {
     const tDim = calcTotalDimension(this._objects);
 
     let { width = 0, height = 0 } = options;
-    const cWidth = Math.max(width, tDim.left + tDim.width);
-    const cHeight = Math.max(height, tDim.top + tDim.height);
+    this._cWidth = Math.max(width, tDim.left + tDim.width);
+    this._cHeight = Math.max(height, tDim.top + tDim.height);
 
     // re-align children
     if (justify === "center") {
       switch (direction) {
         case "row":
           this._objects.forEach((child) => {
-            child.set("left", child.left + (cWidth - tDim.width) / 2);
+            child.set("left", child.left + (this._cWidth - tDim.width) / 2);
           });
           break;
         case "column":
           this._objects.forEach((child) => {
-            child.set("top", child.top + (cHeight - tDim.height) / 2);
+            child.set("top", child.top + (this._cHeight - tDim.height) / 2);
           });
           break;
       }
@@ -80,12 +81,12 @@ const Box = fabric.util.createClass(fabric.Rect, {
       switch (direction) {
         case "column":
           this._objects.forEach((child) => {
-            child.set("left", (cWidth - child.width) / 2);
+            child.set("left", (this._cWidth - child.width) / 2);
           });
           break;
         case "row":
           this._objects.forEach((child) => {
-            child.set("top", (cHeight - child.height) / 2);
+            child.set("top", (this._cHeight - child.height) / 2);
           });
           break;
       }
@@ -94,19 +95,26 @@ const Box = fabric.util.createClass(fabric.Rect, {
     // re-positioning self
     const padding = _parsePadding(options);
     this.set({
-      width: cWidth + padding.x * 2,
-      height: cHeight + padding.y * 2,
+      width: this._cWidth + padding.x * 2,
+      height: this._cHeight + padding.y * 2,
     });
 
     // re-positioning children, for rendering
-    const _zx = -cWidth / 2;
-    const _zy = -cHeight / 2;
+    const _zx = -this._cWidth / 2;
+    const _zy = -this._cHeight / 2;
     this._objects.forEach((child) => {
       child.set({
         left: _zx + (child.left || 0),
         top: _zy + (child.top || 0),
       });
     });
+  },
+
+  item: function (index) {
+    if (index < 0 || index > this._objects.length) {
+      return null;
+    }
+    return this._objects[index];
   },
 
   _render: function (ctx) {

@@ -60,15 +60,15 @@ const asyncClone = (obj, { useCloneAsImage, propertiesToInclude } = {}) =>
   });
 
 /**
- * 
- * @param {Array.<object>} rectangles 
- * @returns 
+ *
+ * @param {Array.<object>} rectangles
+ * @returns
  */
 const calcTotalDimension = (rectangles) => {
   const x = [Infinity, -Infinity];
   const y = [Infinity, -Infinity];
 
-  for (const { left=0, top=0, width, height } of rectangles) {
+  for (const { left = 0, top = 0, width, height } of rectangles) {
     x[0] = Math.min(x[0], left);
     y[0] = Math.min(y[0], top);
     x[1] = Math.max(x[1], left + width);
@@ -83,6 +83,19 @@ const calcTotalDimension = (rectangles) => {
   };
 };
 
+function parsePoint({ left = 0, top = 0 }) {
+  return { x: left, y: top };
+}
+
+function toPosition({ x = 0, y = 0 }) {
+  return { left: x, top: y };
+}
+
+function translate(from, matrix) {
+  const p = fabric.util.transformPoint(parsePoint(from), matrix);
+  return toPosition(p);
+}
+
 module.exports = {
   loadImage,
   loadImages,
@@ -90,4 +103,7 @@ module.exports = {
   streamToBuff,
   asyncClone,
   calcTotalDimension,
+  parsePoint,
+  toPosition,
+  translate
 };
