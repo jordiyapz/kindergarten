@@ -121,7 +121,7 @@ class OperatingSystemUI extends fabric.Group {
     );
 
     // quest
-    const questBodyContent = new fabric.Text("Lorem ipsum dolor sit amet!", {
+    const questBodyContent = new fabric.Text("Move the cursor to red circle", {
       ...theme.font,
       fill: "black",
     });

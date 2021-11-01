@@ -39,6 +39,9 @@ const renderCanvas = (socket, sim) => {
     .then((buffer) => {
       const imgBufStr = buffer.toString("base64");
       const imgSrc = `data:image/png;base64,${imgBufStr}`;
+      socket.nsp.emit("sim_render", imgSrc);
+
+      // deprecated
       socket.emit("render", imgSrc);
     })
     .catch((error) => {

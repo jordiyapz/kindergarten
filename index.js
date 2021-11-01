@@ -1,16 +1,14 @@
 require("dotenv").config();
 
 const express = require("express");
-const { Server } = require("socket.io");
 
 const { app, server } = require("./src/server");
 const router = require("./src/router");
 
-const { onSocketConnection } = require("./src/comm");
+// Initialize socket
+const { io } = require("./src/socket");
 
 const PORT = process.env.PORT || 3000;
-
-const io = new Server(server);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -30,5 +28,3 @@ app.use((error, req, res, next) => {
 server.listen(PORT, () => {
   console.log(`Server listening at http://localhost:${PORT}`);
 });
-
-io.on("connection", onSocketConnection);
