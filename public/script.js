@@ -38,13 +38,13 @@ $(document).ready(function () {
   const createSimSocket = (simId) => {
     const simSocket = io(`/sim-${simId}`);
     simSocket.on("message", console.log);
-    simSocket.on("sim_render", (dataUri) => {
+    simSocket.on("sim:render", (dataUri) => {
       $(`#sim-${simId}-img`).attr({ src: dataUri });
     });
     simSocket.on("connect", () => {
       const simCard = createSimCard({ simId });
       $("#galery").append(simCard);
-      simSocket.emit("sim:render");
+      simSocket.emit("sim:init");
     });
     simSocket.on("sim:remove", () => {
       removeSim(simId, simSocket);

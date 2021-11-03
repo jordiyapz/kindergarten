@@ -5,9 +5,10 @@ const sims = require("./simulations");
 const { renderCanvas } = require("./util");
 
 const io = new Server(server);
-io.on("connection", onSocketConnection);
+// io.on("connection", onSocketConnection);
 
 const simulationNs = io.of(/^\/sim-\w{8}$/);
+
 simulationNs.use((socket, next) => {
   const id = socket.nsp.name.split("-")[1];
   if (!sims[id]) {
@@ -19,19 +20,40 @@ simulationNs.use((socket, next) => {
   }
   next();
 });
+
 simulationNs.on("connection", (socket) => {
   console.log(`${socket.id} connected to ${socket.nsp.name}`);
 
   const id = socket.nsp.name.split("-")[1];
   const sim = sims[id];
 
-  socket.on("sim:render", () => {
-    renderCanvas(socket, sim);
+  socket.on("sim:init", () => {
+    renderCanvas(sim.canvas).then((dataUri) => {
+      socket.nsp.emit("sim:render", dataUri, 0);
+    });
   });
 
   socket.on("sim:move", (movement) => {
     sim.moveCursor(movement);
-    renderCanvas(socket, sim);
+    renderCanvas(sim.canvas).then((dataUri) => {
+      socket.nsp.emit("sim:render", dataUri, 0);
+    });
+  });
+
+  socket.on("sim:action", async (actions) => {
+    /**
+     * Action is an object of command in format:
+     * (x: move_cursor_x, y: move_cursor_y, down: cursor_down)
+     */
+    try {
+      const { x, y } = actions;
+      sim.moveCursor({ x, y });
+  
+      const dataUri = await renderCanvas(sim.canvas)
+      socket.nsp.emit("sim:render", dataUri, 0);
+    } catch (error) {
+      console.error(error.message || error);
+    }
   });
 
   socket.on("disconnect", (reason) => {

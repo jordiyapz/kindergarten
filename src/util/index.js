@@ -30,24 +30,26 @@ const streamToBuff = (stream) =>
     stream.on("error", reject);
   });
 
-const renderCanvas = (socket, sim) => {
-  const { canvas } = sim;
-  canvas.renderAll();
+const renderCanvas = (canvas) =>
+  new Promise((resolve, reject) => {
+    try {
+      canvas.renderAll();
 
-  const stream = canvas.createPNGStream();
-  streamToBuff(stream)
-    .then((buffer) => {
-      const imgBufStr = buffer.toString("base64");
-      const imgSrc = `data:image/png;base64,${imgBufStr}`;
-      socket.nsp.emit("sim_render", imgSrc);
-
-      // deprecated
-      socket.emit("render", imgSrc);
-    })
-    .catch((error) => {
-      console.error(error.message || error);
-    });
-};
+      const stream = canvas.createPNGStream();
+      streamToBuff(stream)
+        .then((buffer) => {
+          const imgBufStr = buffer.toString("base64");
+          const dataUri = `data:image/png;base64,${imgBufStr}`;
+          resolve(dataUri);
+        })
+        .catch((error) => {
+          console.error(error.message || error);
+          reject(error);
+        });
+    } catch (error) {
+      reject(error);
+    }
+  });
 
 /**
  *
