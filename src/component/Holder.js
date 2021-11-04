@@ -29,6 +29,9 @@ class Holder extends fabric.Rect {
     };
 
     this.rearrangeItemsPosition();
+    if (options.selectable !== undefined && !options.selectable) {
+      this.setItemsUnselectable();
+    }
 
     this.bindItems();
     this.on("moving", this._updateItems);

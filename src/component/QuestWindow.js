@@ -19,6 +19,7 @@ class QuestWindow extends ApplicationWindow {
       backgroundColor: theme.palette.stickyNoteYellow,
       width: this.bodyWidth,
       height: this.bodyHeight,
+      selectable: false,
     });
 
     this.compile();
