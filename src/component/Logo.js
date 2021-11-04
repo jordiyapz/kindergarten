@@ -6,14 +6,18 @@ const Logo = fabric.util.createClass(BoxGroup, {
     image,
     { imgOpts = {}, size = 28, padding = 2, ...options } = {}
   ) {
-    const cloned = fabric.util.object.clone(image);
-    cloned.scale((size - padding * 2) / cloned.getScaledWidth());
-    cloned.set(imgOpts);
-    this.callSuper("initialize", [cloned], {
+    const clonnedIcon = fabric.util.object.clone(image);
+    clonnedIcon.scale((size - padding * 2) / clonnedIcon.getScaledWidth());
+    clonnedIcon.set(imgOpts);
+    this.callSuper("initialize", [clonnedIcon], {
       padding,
       ...options,
     });
+    this._icon = image;
   },
+  clone: function ()  {
+    return fabric.util.object.clone(this)
+  }
 });
 
 module.exports = Logo;

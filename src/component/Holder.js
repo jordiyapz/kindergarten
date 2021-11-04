@@ -4,7 +4,7 @@ const { calcTotalDimension } = require("../util");
 class Holder extends fabric.Rect {
   constructor(items, options) {
     super({ ...options, fill: options.bgColor || options.fill });
-    
+
     this._items = Array.isArray(items) ? items : [items];
 
     const {
@@ -13,29 +13,31 @@ class Holder extends fabric.Rect {
       direction = "row",
       justify = "start",
       align = "top",
-      ...rest
     } = options;
 
-    this._rearrangeItemsPosition({
+    this._options = {
+      ...options,
       autoLayout,
       spacing,
       direction,
-      align,
       justify,
-      ...rest,
-    });
+      align,
+    };
+
+    this.rearrangeItemsPosition();
 
     this.bindItems();
     this.on("moving", this._updateItems);
   }
 
-  addWithUpdate(item) {
-    this._items.push(item);
+  addWithUpdate(...items) {
+    this._items.push(...items);
+    this.rearrangeItemsPosition();
     this.bindItems();
   }
 
-  add(item) {
-    this._items.push(item);
+  add(...items) {
+    this._items.push(...items);
   }
 
   set(...args) {
@@ -48,7 +50,7 @@ class Holder extends fabric.Rect {
   }
 
   items() {
-    return [...this._items]
+    return [...this._items];
   }
 
   bindItems() {
@@ -66,13 +68,18 @@ class Holder extends fabric.Rect {
   renderTo(canvas) {
     canvas.add(this);
     this._items.forEach((item) => {
-      canvas.add(item);
+      if (item instanceof Holder) {
+        item.renderTo(canvas);
+      } else {
+        canvas.add(item);
+      }
     });
   }
 
-  _rearrangeItemsPosition(options) {
-    const { autoLayout } = options;
-    if (autoLayout) {
+  rearrangeItemsPosition() {
+    const options = this._options;
+
+    if (options.autoLayout) {
       const { spacing, direction } = options;
       let val = 0;
       this._items.forEach((item) => {
@@ -90,6 +97,7 @@ class Holder extends fabric.Rect {
         }
       });
     }
+    console.log(this._items);
 
     const tDim = calcTotalDimension(this._items);
 

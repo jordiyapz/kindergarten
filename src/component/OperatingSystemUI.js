@@ -4,6 +4,7 @@ const { constraintNum } = require("../util");
 const BoxGroup = require("./BoxGroup");
 const Holder = require("./Holder");
 const Logo = require("./Logo");
+const Taskbar = require("./Taskbar");
 const Window = require("./Window");
 
 class OperatingSystemUI extends Holder {
@@ -13,17 +14,17 @@ class OperatingSystemUI extends Holder {
       width: 160,
       height: 240,
     };
-
+    const winIcon = assets['windows-logo'];
     const applications = [
-      { icon: "quest-logo", name: "Quest App" },
-      { icon: "paint-logo", name: "Paint" },
-      { icon: "notepad-logo", name: "Notepad" },
-    ];
+      { iconName: "quest-logo", name: "Quest App" },
+      { iconName: "paint-logo", name: "Paint" },
+      { iconName: "notepad-logo", name: "Notepad" },
+    ].map((property) => ({ ...property, icon: assets[property.iconName] }));
 
     super([], { width, height, selectable: false, autoLayout: false });
 
     const desktopIconBtns = applications.map(({ icon, name }) => {
-      const logo = new Logo(assets[icon], { size: 24 });
+      const logo = new Logo(icon, { size: 24 });
       const text = new fabric.Text(name, {
         ...theme.font,
         shadow: `rgba(0,0,0,.9) 0px 1px 1px`,
@@ -48,30 +49,16 @@ class OperatingSystemUI extends Holder {
       backgroundColor: theme.palette.desktopBg,
     });
 
-    const taskbarBtns = [
-      "windows-logo",
-      ...applications.map(({ icon }) => icon),
-    ].map((icon) => {
-      const logo = new Logo(assets[icon], {
-        size: 18,
-      });
-      const btn = new BoxGroup([logo], {
-        width: 42,
-        height: taskbarHeight,
-        justify: "center",
-        align: "center",
-      });
-      return btn;
-    });
-    this._taskbar = new BoxGroup(taskbarBtns, {
+    this._taskbar = new Taskbar(applications, winIcon, {
       top: height - taskbarHeight,
       width,
+      height: taskbarHeight,
       backgroundColor: theme.palette.darkerGrey,
       autoLayout: true,
     });
 
     const startMenuItems = applications.map((app) => {
-      const icon = new Logo(assets[app.icon], { size: 17 });
+      const icon = new Logo(app.icon, { size: 17 });
       const label = new fabric.Text(app.name, theme.font);
       const btn = new BoxGroup([icon, label], {
         autoLayout: true,
