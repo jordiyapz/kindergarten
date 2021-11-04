@@ -1,5 +1,6 @@
 const { fabric } = require("fabric");
 const theme = require("../theme");
+const { constraintNum } = require("../util");
 const BoxGroup = require("./BoxGroup");
 const Logo = require("./Logo");
 const Window = require("./Window");
@@ -116,11 +117,11 @@ class OperatingSystemUI extends fabric.Group {
     const notepadWindow = new Window(
       notepadBody,
       { title: "Notepad", iconTexture: assets["notepad-logo"] },
-      { top: 80, left: 120 }
+      { top: 80, left: 120, visible: false }
     );
 
     // quest
-    const questBodyContent = new fabric.Text("Lorem ipsum dolor sit amet!", {
+    const questBodyContent = new fabric.Text("Move the cursor to red circle", {
       ...theme.font,
       fill: "black",
     });
@@ -133,7 +134,7 @@ class OperatingSystemUI extends fabric.Group {
     const questWindow = new Window(
       questBody,
       { title: "Quest App", iconTexture: assets["quest-logo"] },
-      { left: 324, top: 193 }
+      { left: 449, top: 0 }
     );
 
     workspace.addWithUpdate(notepadWindow);
@@ -145,8 +146,20 @@ class OperatingSystemUI extends fabric.Group {
     this.addWithUpdate(this._cursor);
   }
 
+  getCursorCoord() {
+    const { left, top } = this._cursor;
+    return new fabric.Point(left + this.width / 2, top + this.height / 2);
+  }
+
+  /**
+   * Move cursor to position
+   * @param {{x: number, y: number}} position
+   */
   moveCursor({ x, y }) {
-    this._cursor.set({ top: y - this.height / 2, left: x - this.width / 2 });
+    this._cursor.set({
+      left: constraintNum(x, { max: this.width }) - this.width / 2,
+      top: constraintNum(y, { max: this.height }) - this.height / 2,
+    });
   }
 
   click() {

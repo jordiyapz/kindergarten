@@ -30,19 +30,26 @@ const streamToBuff = (stream) =>
     stream.on("error", reject);
   });
 
-const renderCanvas = (socket, sim) => {
-  sim.canvas.renderAll();
-  const stream = sim.canvas.createPNGStream();
-  streamToBuff(stream)
-    .then((buffer) => {
-      const imgBufStr = buffer.toString("base64");
-      const imgSrc = `data:image/png;base64,${imgBufStr}`;
-      socket.emit("render", imgSrc);
-    })
-    .catch((error) => {
-      console.error(error.message || error);
-    });
-};
+const renderCanvas = (canvas) =>
+  new Promise((resolve, reject) => {
+    try {
+      canvas.renderAll();
+
+      const stream = canvas.createPNGStream();
+      streamToBuff(stream)
+        .then((buffer) => {
+          const imgBufStr = buffer.toString("base64");
+          const dataUri = `data:image/png;base64,${imgBufStr}`;
+          resolve(dataUri);
+        })
+        .catch((error) => {
+          console.error(error.message || error);
+          reject(error);
+        });
+    } catch (error) {
+      reject(error);
+    }
+  });
 
 /**
  *
@@ -96,6 +103,10 @@ function translate(from, matrix) {
   return toPosition(p);
 }
 
+function constraintNum(value, { min = 0, max = Infinity }) {
+  return Math.max(min, Math.min(max, value));
+}
+
 module.exports = {
   loadImage,
   loadImages,
@@ -105,5 +116,6 @@ module.exports = {
   calcTotalDimension,
   parsePoint,
   toPosition,
-  translate
+  translate,
+  constraintNum,
 };

@@ -1,8 +1,11 @@
 body {
-  margin: 0;
+  margin: 8;
   padding: 0;
-  overflow: hidden;
   background-color: gray;
+}
+
+h2 {
+  margin-block-end: .3em;
 }
 
 #canvas-wrapper {
@@ -15,4 +18,21 @@ body {
 
 #main-canvas {
   cursor: pointer !important;
+}
+
+#galery {
+  display: flex;
+  flex-wrap: wrap;
+  width: 86%;
+  margin: 0 auto;
+  justify-content: flex-start;
+}
+
+.sim-card-outer {
+  display: flex;
+  justify-content: center;
+}
+
+.sim-card-inner {
+  padding: 8px;
 }
