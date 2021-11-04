@@ -1,13 +1,12 @@
 const { fabric } = require("fabric");
 const theme = require("../theme");
 const { constraintNum } = require("../util");
-const BoxGroup = require("./BoxGroup");
 const Holder = require("./Holder");
-const Logo = require("./Logo");
 const StartMenu = require("./StartMenu");
 const Taskbar = require("./Taskbar");
-const Window = require("./Window");
 const Workspace = require("./Workspace");
+const NotepadWindow = require("./NotepadWindow");
+const QuestWindow = require("./QuestWindow");
 
 class OperatingSystemUI extends Holder {
   constructor(assets, { width = 600, height = 400 }) {
@@ -61,50 +60,34 @@ class OperatingSystemUI extends Holder {
     this._cursor.scale(10 / this._cursor.width);
 
     // notepad
-    const notepadBodyContent = new fabric.Text("Lorem ipsum dolor sit amet!", {
-      ...theme.font,
-      fill: "black",
-    });
-    const notepadBody = new BoxGroup([notepadBodyContent], {
-      backgroundColor: "white",
-      width: 320,
+    const notepadWindow = new NotepadWindow(assets["notepad-logo"], {
+      width: 300,
       height: 220,
-      padding: 4,
+      top: 80,
+      left: 120,
     });
-    const notepadWindow = new Window(
-      notepadBody,
-      { title: "Notepad", iconTexture: assets["notepad-logo"] },
-      { top: 80, left: 120, visible: false }
-    );
 
     // quest
-    const questBodyContent = new fabric.Text("Move the cursor to red circle", {
-      ...theme.font,
-      fill: "black",
+    const questWindow = new QuestWindow(assets["quest-logo"], {
+      left: 450,
+      top: 276,
+      width: 150,
+      height: 90,
     });
-    const questBody = new BoxGroup([questBodyContent], {
-      width: 151,
-      height: 82,
-      padding: 4,
-      backgroundColor: theme.palette.stickyNoteYellow,
-    });
-    const questWindow = new Window(
-      questBody,
-      { title: "Quest App", iconTexture: assets["quest-logo"] },
-      { left: 449, top: 0 }
-    );
-
-    workspace.addWithUpdate(notepadWindow);
-    workspace.addWithUpdate(questWindow);
 
     this._taskbar.item(0).onClick((e) => {
       this._startMenu.state.visible = !this._startMenu.visible;
-    });
-    this.on("mouseup", (e) => {
-      if (this._startMenu.state.visible) {
-        this._startMenu.state.visible = false;
+
+      if (this._startMenu.visible) {
+        questWindow.state.text = "Close the menu";
+      } else {
+        questWindow.state.text = "Move the cursor to red circle";
       }
+
+      notepadWindow.state.visible = !this._startMenu.visible;
     });
+
+    workspace.addWithUpdate(notepadWindow, questWindow);
 
     this.add(workspace);
     this.add(this._startMenu);

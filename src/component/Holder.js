@@ -2,10 +2,14 @@ const { fabric } = require("fabric");
 const { calcTotalDimension } = require("../util");
 
 class Holder extends fabric.Rect {
-  constructor(items, options) {
+  constructor(items, options = {}) {
     super({ ...options, fill: options.bgColor || options.fill });
 
     this._items = Array.isArray(items) ? items : [items];
+
+    this._cache = {
+      visible: this.visible,
+    };
 
     const {
       autoLayout = true,
@@ -43,10 +47,15 @@ class Holder extends fabric.Rect {
   set(...args) {
     super.set.apply(this, args);
     this.fire("moving");
+
+    if (this._cache && this.visible !== this._cache.visible) {
+      this._cache.visible = this.visible;
+      this._items.forEach(item => item.set('visible', this.visible))
+    }
   }
 
-  setItemsUnselectable(selectable = false) {
-    this._items.forEach((item) => item.set("selectable", selectable));
+  setItemsUnselectable() {
+    this._items.forEach((item) => item.set("selectable", false));
   }
 
   item(i) {
@@ -105,10 +114,12 @@ class Holder extends fabric.Rect {
     const tDim = calcTotalDimension(this._items);
 
     let { width = 0, height = 0 } = options;
-    this._cWidth = Math.max(width, tDim.left + tDim.width);
-    this._cHeight = Math.max(height, tDim.top + tDim.height);
+    const pad = this._parsePadding(options);
+    this._cWidth = Math.max(width - pad.x * 2, tDim.left + tDim.width);
+    this._cHeight = Math.max(height - pad.y * 2, tDim.top + tDim.height);
 
     // re-align children
+    const { direction } = options;
     if (options.justify === "center") {
       switch (direction) {
         case "row":
@@ -138,24 +149,15 @@ class Holder extends fabric.Rect {
       }
     }
 
-    const _parsePadding = ({ padding: pad = {} }) => {
-      if (typeof pad === "object") {
-        return { x: pad.x || 0, y: pad.y || 0 };
-      } else if (typeof pad === "number") {
-        return { x: pad, y: pad };
-      }
-    };
-
     // re-positioning self
-    const padding = _parsePadding(options);
     this.set({
-      width: this._cWidth + padding.x * 2,
-      height: this._cHeight + padding.y * 2,
+      width: this._cWidth + pad.x * 2,
+      height: this._cHeight + pad.y * 2,
     });
 
     // re-positioning children, for rendering
-    const _zx = this.left + padding.x;
-    const _zy = this.top + padding.y;
+    const _zx = this.left + pad.x;
+    const _zy = this.top + pad.y;
     this._items.forEach((child) => {
       child.set({
         left: _zx + (child.left || 0),
@@ -183,6 +185,14 @@ class Holder extends fabric.Rect {
       item.set(options);
       item.setCoords();
     });
+  }
+
+  _parsePadding({ padding: pad = {} }) {
+    if (typeof pad === "object") {
+      return { x: pad.x || 0, y: pad.y || 0 };
+    } else if (typeof pad === "number") {
+      return { x: pad, y: pad };
+    }
   }
 }
 

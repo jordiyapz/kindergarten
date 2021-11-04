@@ -31,8 +31,9 @@ class Workspace extends Holder {
       spacing: 12,
       padding: 4,
       direction: "column",
+      selectable: false,
     });
-    desktopIconContainer.setItemsUnselectable(false);
+    desktopIconContainer.setItemsUnselectable();
 
     this.addWithUpdate(desktopIconContainer);
   }

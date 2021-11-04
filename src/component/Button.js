@@ -4,7 +4,7 @@ const ButtonBase = require("./ButtonBase");
 const Logo = require("./Logo");
 
 class Button extends ButtonBase {
-  constructor(icon, { size, textOptions = {}, ...options }) {
+  constructor(icon, { size, textOptions = { text: undefined }, ...options }) {
     const childs = [new Logo(icon, { size })];
 
     if (textOptions.text) {
