@@ -4,6 +4,7 @@ const { constraintNum } = require("../util");
 const BoxGroup = require("./BoxGroup");
 const Holder = require("./Holder");
 const Logo = require("./Logo");
+const StartMenu = require("./StartMenu");
 const Taskbar = require("./Taskbar");
 const Window = require("./Window");
 const Workspace = require("./Workspace");
@@ -37,19 +38,7 @@ class OperatingSystemUI extends Holder {
       backgroundColor: theme.palette.darkerGrey,
     });
 
-    const startMenuItems = applications.map((app) => {
-      const icon = new Logo(app.icon, { size: 17 });
-      const label = new fabric.Text(app.name, theme.font);
-      const btn = new BoxGroup([icon, label], {
-        autoLayout: true,
-        padding: 6,
-        spacing: 8,
-        align: "center",
-        width: startMenuProp.width,
-      });
-      return btn;
-    });
-    this._startMenu = new BoxGroup(startMenuItems, {
+    this._startMenu = new StartMenu(applications, {
       ...startMenuProp,
       backgroundColor: theme.palette.darkGrey,
       autoLayout: true,
@@ -109,7 +98,12 @@ class OperatingSystemUI extends Holder {
     workspace.addWithUpdate(questWindow);
 
     this._taskbar.item(0).onClick((e) => {
-      this._startMenu.set("visible", !this._startMenu.visible);
+      this._startMenu.state.visible = !this._startMenu.visible;
+    });
+    this.on("mouseup", (e) => {
+      if (this._startMenu.state.visible) {
+        this._startMenu.state.visible = false;
+      }
     });
 
     this.add(workspace);
