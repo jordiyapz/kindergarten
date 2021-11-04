@@ -6,6 +6,7 @@ const Holder = require("./Holder");
 const Logo = require("./Logo");
 const Taskbar = require("./Taskbar");
 const Window = require("./Window");
+const Workspace = require("./Workspace");
 
 class OperatingSystemUI extends Holder {
   constructor(assets, { width = 600, height = 400 }) {
@@ -14,7 +15,7 @@ class OperatingSystemUI extends Holder {
       width: 160,
       height: 240,
     };
-    const winIcon = assets['windows-logo'];
+    const winIcon = assets["windows-logo"];
     const applications = [
       { iconName: "quest-logo", name: "Quest App" },
       { iconName: "paint-logo", name: "Paint" },
@@ -23,27 +24,7 @@ class OperatingSystemUI extends Holder {
 
     super([], { width, height, selectable: false, autoLayout: false });
 
-    const desktopIconBtns = applications.map(({ icon, name }) => {
-      const logo = new Logo(icon, { size: 24 });
-      const text = new fabric.Text(name, {
-        ...theme.font,
-        shadow: `rgba(0,0,0,.9) 0px 1px 1px`,
-      });
-      const btn = new BoxGroup([logo, text], {
-        width: 42,
-        align: "center",
-        autoLayout: true,
-        direction: "column",
-      });
-      return btn;
-    });
-    const desktopIconContainer = new BoxGroup(desktopIconBtns, {
-      autoLayout: true,
-      spacing: 12,
-      padding: 4,
-      direction: "column",
-    });
-    const workspace = new BoxGroup([desktopIconContainer], {
+    const workspace = new Workspace(applications, {
       width,
       height: height - taskbarHeight,
       backgroundColor: theme.palette.desktopBg,
@@ -54,7 +35,6 @@ class OperatingSystemUI extends Holder {
       width,
       height: taskbarHeight,
       backgroundColor: theme.palette.darkerGrey,
-      autoLayout: true,
     });
 
     const startMenuItems = applications.map((app) => {
@@ -128,14 +108,16 @@ class OperatingSystemUI extends Holder {
     workspace.addWithUpdate(notepadWindow);
     workspace.addWithUpdate(questWindow);
 
+    this._taskbar.item(0).onClick((e) => {
+      this._startMenu.set("visible", !this._startMenu.visible);
+    });
+
     this.add(workspace);
     this.add(this._startMenu);
     this.add(this._taskbar);
     this.add(this._cursor);
-    this.items().forEach((item) => {
-      item.set("selectable", false);
-    });
     this.bindItems();
+    this.setItemsUnselectable(false);
   }
 
   getCursorCoord() {
@@ -152,12 +134,6 @@ class OperatingSystemUI extends Holder {
       left: constraintNum(x, { max: this.width }),
       top: constraintNum(y, { max: this.height }),
     });
-  }
-
-  click() {
-    if (this._cursor.intersectsWithObject(this._taskbar, false, true)) {
-      this._startMenu.set("visible", !this._startMenu.visible);
-    }
   }
 }
 

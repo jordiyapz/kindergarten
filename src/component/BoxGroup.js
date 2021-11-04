@@ -1,6 +1,6 @@
 const { fabric } = require("fabric");
 
-const Box = new fabric.util.createClass(fabric.Group, {
+const BoxGroup = new fabric.util.createClass(fabric.Group, {
   type: "BoxGroup",
   /**
    *
@@ -103,4 +103,4 @@ const Box = new fabric.util.createClass(fabric.Group, {
   },
 });
 
-module.exports = Box;
+module.exports = BoxGroup;

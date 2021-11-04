@@ -39,16 +39,13 @@ loader
       canvas.renderAll();
     };
 
-    const onCursorClick = () => {
-      os.click();
-      canvas.renderAll();
-    };
-
     canvas.on("mouse:move", (e) => {
       onCursorMove(e.pointer);
     });
     canvas.on("mouse:up", (e) => {
-      onCursorClick();
+      setTimeout(() => {
+        canvas.renderAll();
+      }, 2);
     });
 
     canvas.renderAll();

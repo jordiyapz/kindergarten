@@ -45,6 +45,10 @@ class Holder extends fabric.Rect {
     this.fire("moving");
   }
 
+  setItemsUnselectable(selectable = false) {
+    this._items.forEach((item) => item.set("selectable", selectable));
+  }
+
   item(i) {
     return this._items[i] || null;
   }
@@ -97,7 +101,6 @@ class Holder extends fabric.Rect {
         }
       });
     }
-    console.log(this._items);
 
     const tDim = calcTotalDimension(this._items);
 
