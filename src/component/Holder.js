@@ -4,7 +4,7 @@ const { calcTotalDimension } = require("../util");
 class Holder extends fabric.Rect {
   constructor(items, options) {
     super({ ...options, fill: options.bgColor || options.fill });
-
+    
     this._items = Array.isArray(items) ? items : [items];
 
     const {
@@ -15,7 +15,8 @@ class Holder extends fabric.Rect {
       align = "top",
       ...rest
     } = options;
-    this._setItemsPosition({
+
+    this._rearrangeItemsPosition({
       autoLayout,
       spacing,
       direction,
@@ -23,8 +24,18 @@ class Holder extends fabric.Rect {
       justify,
       ...rest,
     });
-    this._bindItems();
+
+    this.bindItems();
     this.on("moving", this._updateItems);
+  }
+
+  addWithUpdate(item) {
+    this._items.push(item);
+    this.bindItems();
+  }
+
+  add(item) {
+    this._items.push(item);
   }
 
   set(...args) {
@@ -36,6 +47,22 @@ class Holder extends fabric.Rect {
     return this._items[i] || null;
   }
 
+  items() {
+    return [...this._items]
+  }
+
+  bindItems() {
+    const refTransform = this.calcTransformMatrix();
+    const invRefTransform = fabric.util.invertTransform(refTransform);
+    this._items.forEach((item) => {
+      const desiredTranform = fabric.util.multiplyTransformMatrices(
+        invRefTransform,
+        item.calcTransformMatrix()
+      );
+      item.ref = desiredTranform;
+    });
+  }
+
   renderTo(canvas) {
     canvas.add(this);
     this._items.forEach((item) => {
@@ -43,7 +70,7 @@ class Holder extends fabric.Rect {
     });
   }
 
-  _setItemsPosition(options) {
+  _rearrangeItemsPosition(options) {
     const { autoLayout } = options;
     if (autoLayout) {
       const { spacing, direction } = options;
@@ -123,18 +150,6 @@ class Holder extends fabric.Rect {
         left: _zx + (child.left || 0),
         top: _zy + (child.top || 0),
       });
-    });
-  }
-
-  _bindItems() {
-    const refTransform = this.calcTransformMatrix();
-    const invRefTransform = fabric.util.invertTransform(refTransform);
-    this._items.forEach((item) => {
-      const desiredTranform = fabric.util.multiplyTransformMatrices(
-        invRefTransform,
-        item.calcTransformMatrix()
-      );
-      item.ref = desiredTranform;
     });
   }
 

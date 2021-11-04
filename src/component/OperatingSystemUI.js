@@ -2,10 +2,11 @@ const { fabric } = require("fabric");
 const theme = require("../theme");
 const { constraintNum } = require("../util");
 const BoxGroup = require("./BoxGroup");
+const Holder = require("./Holder");
 const Logo = require("./Logo");
 const Window = require("./Window");
 
-class OperatingSystemUI extends fabric.Group {
+class OperatingSystemUI extends Holder {
   constructor(assets, { width = 600, height = 400 }) {
     const taskbarHeight = 34;
     const startMenuProp = {
@@ -19,7 +20,7 @@ class OperatingSystemUI extends fabric.Group {
       { icon: "notepad-logo", name: "Notepad" },
     ];
 
-    super([], { width, height, selectable: false });
+    super([], { width, height, selectable: false, autoLayout: false });
 
     const desktopIconBtns = applications.map(({ icon, name }) => {
       const logo = new Logo(assets[icon], { size: 24 });
@@ -140,10 +141,14 @@ class OperatingSystemUI extends fabric.Group {
     workspace.addWithUpdate(notepadWindow);
     workspace.addWithUpdate(questWindow);
 
-    this.addWithUpdate(workspace);
-    this.addWithUpdate(this._startMenu);
-    this.addWithUpdate(this._taskbar);
-    this.addWithUpdate(this._cursor);
+    this.add(workspace);
+    this.add(this._startMenu);
+    this.add(this._taskbar);
+    this.add(this._cursor);
+    this.items().forEach((item) => {
+      item.set("selectable", false);
+    });
+    this.bindItems();
   }
 
   getCursorCoord() {
@@ -157,8 +162,8 @@ class OperatingSystemUI extends fabric.Group {
    */
   moveCursor({ x, y }) {
     this._cursor.set({
-      left: constraintNum(x, { max: this.width }) - this.width / 2,
-      top: constraintNum(y, { max: this.height }) - this.height / 2,
+      left: constraintNum(x, { max: this.width }),
+      top: constraintNum(y, { max: this.height }),
     });
   }
 

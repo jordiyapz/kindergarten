@@ -74,6 +74,8 @@ const asyncClone = (obj, { useCloneAsImage, propertiesToInclude } = {}) =>
 const calcTotalDimension = (rectangles) => {
   const x = [Infinity, -Infinity];
   const y = [Infinity, -Infinity];
+  
+  if (!rectangles.length) return { left: 0, top: 0, width: 0, height: 0 }; 
 
   for (const { left = 0, top = 0, width, height } of rectangles) {
     x[0] = Math.min(x[0], left);

@@ -7,6 +7,7 @@ const {
   anotherBox,
   yetAgainAnotherBox,
 } = require("./util/debug");
+const Holder = require("./component/Holder");
 
 const canvas = new fabric.Canvas("main-canvas", {
   width: 600,
@@ -31,7 +32,7 @@ loader
   .load()
   .then((assets) => {
     const os = new OperatingSystemUI(assets, {});
-    canvas.add(os);
+    os.renderTo(canvas);
 
     const onCursorMove = ({ x, y }) => {
       os.moveCursor({ x, y });
