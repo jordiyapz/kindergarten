@@ -7,9 +7,15 @@ module.exports = {
   devServer: {
     contentBase: "./dist",
     port: 9000,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+      "Access-Control-Allow-Headers":
+        "X-Requested-With, content-type, Authorization",
+    },
     watchOptions: {
       aggregateTimeout: 500, // delay before reloading
-      poll: 1000 // enable polling since fsevents are not supported in docker
+      poll: 1000, // enable polling since fsevents are not supported in docker
     },
   },
   devtool: "inline-source-map",
@@ -17,12 +23,12 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [
         { from: "public/assets", to: "assets" },
-        { from: "public/style.css", to: "." },
-        { from: "public/favicon.ico", to: "." },
+        { from: "public/static/style.css", to: "." },
+        { from: "public/static/favicon.ico", to: "." },
       ],
     }),
     new HTMLWebpackPlugin({
-      template: "public/index.html",
+      template: "public/static/index.html",
       filename: "index.html",
     }),
   ],
